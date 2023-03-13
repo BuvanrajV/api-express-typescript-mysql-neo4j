@@ -12,25 +12,25 @@ import { getDepartmentId } from "../models/mysqlModels/departmentsModel";
 
 export const postController = async (req: Request, res: Response) => {
   try {
-    const userDetailsForMysql = {
-      user_first_name: req.body.firstName,
-      user_last_name: req.body.lastName,
-      user_email: req.body.email,
-      user_startdate: req.body.startDate,
-      user_designation: req.body.designation,
-      user_created_date: new Date(),
-      user_status: "1",
-    };
+    // Get userDetailsForMySql in middleware
+    const userDetailsForMysql = req.body.userDetailsForMysql;
+    // Create user in mysql database
     await createUser(userDetailsForMysql);
-    let getUserIdFromDb: any = await getUserId(userDetailsForMysql.user_email);
+    //Get user id from mysql database
+    const getUserIdFromDb: any = await getUserId(
+      userDetailsForMysql.user_email
+    );
     const userId = getUserIdFromDb[0].user_id;
+    //create user nodes in neo4j db
     const userDetailsForNeo4j = {
       user_id: userId,
       ...userDetailsForMysql,
     };
     await createUserNode(userDetailsForNeo4j);
+    //Get location id from db
     const getLocationIdFromDb: any = await getLocationId(req.body.location);
     const locationId = getLocationIdFromDb[0].location_id;
+    //Insert details in userLocationMapping table(mysql db)
     const userDetailsForUserLocationMapping = {
       map_user_id: userId,
       map_location_id: locationId,
@@ -38,11 +38,14 @@ export const postController = async (req: Request, res: Response) => {
       map_status: "1",
     };
     await insertDetailsInUserlocationMapping(userDetailsForUserLocationMapping);
+    // Create a relationship between user node and location node in neo4j
     await userLocationRelationship(userId, locationId);
+    // Get department id from db
     const getDepartmentIdFromDb: any = await getDepartmentId(
       req.body.department
     );
     const departmentId = getDepartmentIdFromDb[0].id;
+    //Insert details in userDepartmentMapping table(mysql db)
     const userDetailsForUserDepartmentMapping = {
       map_user_id: userId,
       map_department_id: departmentId,
@@ -52,9 +55,18 @@ export const postController = async (req: Request, res: Response) => {
     await insertDetailsInUserdepartmentMapping(
       userDetailsForUserDepartmentMapping
     );
+    // Create relationship between user node and department node
     await userDepartmentRelationship(userId, departmentId);
-  } catch {
-    console.log("error occur");
+    // Send the response
+    console.log("successfully created");
+    res.status(200).json({
+      message: "Successfully user created",
+    });
+  } catch (error: any) {
+    console.log("error occur :", error);
+    res.status(500).send({
+      message: error.message || "Some error occurred.",
+    });
   }
 };
 
