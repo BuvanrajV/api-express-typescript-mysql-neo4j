@@ -8,6 +8,7 @@ interface UserDetails {
   user_designation: string;
   user_created_date: Date;
   user_status: string;
+  user_candidate_id: number;
 }
 
 export const getUserId = (email: { user_email: string }) => {
@@ -57,3 +58,19 @@ export const createUser = (userDetails: UserDetails) => {
   });
 };
 
+export const changeUserStatusInMysql = (candidateId: number) => {
+    return new Promise((resolve, reject) => {
+    mysqlDb.query(
+      "UPDATE users SET user_status='0' WHERE user_candidate_id=?",
+      [candidateId],
+      (err, res) => {
+        if (err) {
+          console.error("error: ", err);
+          reject(err);
+        } else {
+          resolve(res);
+        }
+      }
+    );
+  });
+};
