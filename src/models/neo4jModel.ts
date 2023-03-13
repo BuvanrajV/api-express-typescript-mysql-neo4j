@@ -9,6 +9,7 @@ interface UserDetails {
   user_designation: string;
   user_created_date: Date;
   user_status: string;
+  user_candidate_id : number;
 }
 
 export const createUserNode = async (userDetails: UserDetails) => {
@@ -23,7 +24,8 @@ export const createUserNode = async (userDetails: UserDetails) => {
         user_startdate: '${userDetails.user_startdate}',
         user_designation: '${userDetails.user_designation}',
         user_created_date: '${userDetails.user_created_date}',
-        user_status: '${userDetails.user_status}'
+        user_status: '${userDetails.user_status}',
+        user_candidate_id : ${userDetails.user_candidate_id}
     })`
     );
   } catch (error) {
@@ -62,3 +64,17 @@ export const userDepartmentRelationship = async (
     neo4jDriver.close();
   }
 };
+
+export const changeUserStatusInNeo4j = async (candidateId:number)=>{
+  try {
+    const session = neo4jDriver.session();
+    await session.run(
+      `MATCH (user:User {user_candidate_id:${candidateId}})
+      SET user.user_status='0'`
+    );
+  } catch (error) {
+    console.error("error occur", error);
+  } finally {
+    neo4jDriver.close();
+  }
+}
