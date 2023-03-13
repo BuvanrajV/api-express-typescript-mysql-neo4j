@@ -54,9 +54,8 @@ export const userDepartmentRelationship = async (
     const session = neo4jDriver.session();
     await session.run(
       `MATCH (user:User {user_id:${userId}}),(department:Department {department_id :${departmentId}})
-      CREATE (user)-[:LOCATION_OF]->(department)`
+      CREATE (user)-[:DEPARTMENT_OF]->(department)`
     );
-    console.log("successfully completed");
   } catch (error) {
     console.error("error occur", error);
   } finally {
