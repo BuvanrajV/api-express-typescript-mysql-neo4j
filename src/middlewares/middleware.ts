@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import { getLocationId } from "./../models/mysqlModels/locationsModel";
-import { getUserId } from "./../models/mysqlModels/usersModel";
+import { getUserId,getCandidateById } from "./../models/mysqlModels/usersModel";
 import { getDepartmentId } from "../models/mysqlModels/departmentsModel";
 
 export const postMiddleware = async (
@@ -29,7 +29,13 @@ export const postMiddleware = async (
   if (!departmentId[0]) {
     return res.status(400).json({ error: "Department not matched" });
   }
+  // Check CandidateId exist or not
+  const candidate : any = await getCandidateById(req.body.candidateId);
+  if(candidate){
+    return res.status(400).json({ error: "Candidate Id already exist" });
+  }
   req.body.userDetailsForMysql = {
+    user_candidate_id : req.body.candidateId,
     user_first_name: req.body.firstName,
     user_last_name: req.body.lastName,
     user_email: req.body.email,
