@@ -28,8 +28,6 @@ export const createUserNode = async (userDetails: UserDetails) => {
     );
   } catch (error) {
     console.error("error occur", error);
-  } finally {
-    neo4jDriver.close();
   }
 };
 
@@ -39,17 +37,14 @@ export const userLocationRelationship = async (
 ) => {
   try {
     const session = neo4jDriver.session();
-    // await session.run(
-    //   `MATCH (user:User {user_id:${userId}}),(location:Location {location_id :${locationId}})
-    //   CREATE (user)-[:LOCATION_OF]->(location)`
-    // );
+    await session.run(
+      `MATCH (user:User {user_id:${userId}}),(location:Location {location_id :${locationId}})
+      CREATE (user)-[:LOCATION_OF]->(location)`
+    );
   } catch (error) {
     console.error("error occur", error);
-  } finally {
-    neo4jDriver.close();
   }
 };
-
 
 export const userDepartmentRelationship = async (
   userId: number,
@@ -57,11 +52,11 @@ export const userDepartmentRelationship = async (
 ) => {
   try {
     const session = neo4jDriver.session();
-    // await session.run(
-    //   `MATCH (user:User {user_id:${userId}}),(department:Department {department_id :${departmentId}})
-    //   CREATE (user)-[:LOCATION_OF]->(department)`
-    // );
-    console.log("successfully completed")
+    await session.run(
+      `MATCH (user:User {user_id:${userId}}),(department:Department {department_id :${departmentId}})
+      CREATE (user)-[:LOCATION_OF]->(department)`
+    );
+    console.log("successfully completed");
   } catch (error) {
     console.error("error occur", error);
   } finally {
