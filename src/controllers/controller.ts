@@ -1,8 +1,10 @@
+import { changeUserStatusInMysql } from "./../models/mysqlModels/usersModel";
 import { Request, Response } from "express";
 import { insertDetailsInUserdepartmentMapping } from "./../models/mysqlModels/userDepartmentMapping";
 import { createUser, getUserId } from "../models/mysqlModels/usersModel";
 import { getLocationId } from "../models/mysqlModels/locationsModel";
 import {
+  changeUserStatusInNeo4j,
   createUserNode,
   userDepartmentRelationship,
   userLocationRelationship,
@@ -72,4 +74,19 @@ export const postController = async (req: Request, res: Response) => {
 
 export const putController = async (req: Request, res: Response) => {};
 
-export const deleteController = async (req: Request, res: Response) => {};
+export const deleteController = async (req: Request, res: Response) => {
+  try {
+    const candidateId = parseInt(req.body.candidateId);
+    await changeUserStatusInMysql(candidateId);
+    await changeUserStatusInNeo4j(candidateId);
+    console.log("successfully deleted");
+    res.status(200).json({
+      message: "Successfully Deleted",
+    });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).send({
+      message: error.message || "Some error occurred.",
+    });
+  }
+};
