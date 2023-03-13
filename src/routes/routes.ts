@@ -13,7 +13,7 @@ router.post(
   // Endpoint
   "/post",
   // Initial data validation using express validator
-  body("firstName").isString().isLength({ max: 150 }).isAlphanumeric(),
+  body("firstName").isLength({ max: 150 }).isAlphanumeric(),
   body("lastName").isLength({ max: 150 }).isAlphanumeric(),
   body("email").isEmail().withMessage("email should be in email format"),
   body("startDate")
@@ -34,6 +34,7 @@ router.post(
   body("location").isLength({ max: 100 }),
   body("department").isLength({ max: 100 }),
   body("designation").isLength({ max: 100 }),
+  body('candidateId').isInt().isLength({max:10}),
   // Middleware
   postMiddleware,
   // Controller
