@@ -5,7 +5,7 @@ import {
   putController,
   deleteController,
 } from "../controllers/controller";
-import { postMiddleware } from "../middlewares/middleware";
+import { postMiddleware, deleteMiddleware } from "../middlewares/middleware";
 
 const router = Router();
 
@@ -34,14 +34,14 @@ router.post(
   body("location").isLength({ max: 100 }),
   body("department").isLength({ max: 100 }),
   body("designation").isLength({ max: 100 }),
-  body('candidateId').isInt().isLength({max:10}),
+  body("candidateId").isLength({ max: 10 }),
   // Middleware
   postMiddleware,
   // Controller
   postController
 );
 
-router.put("/:id", putController);
-router.delete("/:id", deleteController);
+router.put("/", putController);
+router.delete("/delete", deleteMiddleware, deleteController);
 
 export default router;
