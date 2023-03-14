@@ -1,4 +1,4 @@
-import mysqlDb from "../../databases/mysqlDatabase";
+import mysqlDb from '../../databases/mysql'
 
 interface UserDetails {
   map_user_id: number;
@@ -12,16 +12,16 @@ export const insertDetailsInUserdepartmentMapping = (
 ) => {
   return new Promise((resolve, reject) => {
     mysqlDb.query(
-      "INSERT INTO user_department_mapping SET ?",
+      'INSERT INTO user_department_mapping SET ?',
       [userDetails],
       (err, res) => {
         if (err) {
-          console.error(err);
-          reject();
+          console.error(err)
+          reject()
         } else {
-          resolve(res);
+          resolve(res)
         }
       }
-    );
-  });
-};
+    )
+  })
+}
