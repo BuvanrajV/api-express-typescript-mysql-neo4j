@@ -1,6 +1,6 @@
 import { changeUserStatusInMysql } from '../models/mysqlModels/users'
 import { Request, Response } from 'express'
-import { insertDetailsInUserdepartmentMapping } from './../models/mysqlModels/userDepartmentMapping'
+import { insertInUserdepartmentMapping } from './../models/mysqlModels/userDepartmentMapping'
 import { createUser, getUserId } from '../models/mysqlModels/users'
 import { getLocationId } from '../models/mysqlModels/locations'
 import {
@@ -9,7 +9,7 @@ import {
   userDepartmentRelationship,
   userLocationRelationship,
 } from '../models/usersInNeo4j'
-import { insertDetailsInUserlocationMapping } from '../models/mysqlModels/userLocationMapping'
+import { insertInUserlocationMapping } from '../models/mysqlModels/userLocationMapping'
 import { getDepartmentId } from '../models/mysqlModels/departments'
 
 export const postController = async (req: Request, res: Response) => {
@@ -39,7 +39,7 @@ export const postController = async (req: Request, res: Response) => {
       map_created_date: new Date(),
       map_status: '1',
     }
-    await insertDetailsInUserlocationMapping(userDetailsForUserLocationMapping)
+    await insertInUserlocationMapping(userDetailsForUserLocationMapping)
     // Create a relationship between user node and location node in neo4j
     await userLocationRelationship(userId, locationId)
     // Get department id from db
@@ -48,14 +48,14 @@ export const postController = async (req: Request, res: Response) => {
     )
     const departmentId = getDepartmentIdFromDb[0].id
     //Insert details in userDepartmentMapping table(mysql db)
-    const userDetailsForUserDepartmentMapping = {
+    const userForUserDepartmentMapping = {
       map_user_id: userId,
       map_department_id: departmentId,
       map_created_date: new Date(),
       map_status: '1',
     }
-    await insertDetailsInUserdepartmentMapping(
-      userDetailsForUserDepartmentMapping
+    await insertInUserdepartmentMapping(
+      userForUserDepartmentMapping
     )
     // Create relationship between user node and department node
     await userDepartmentRelationship(userId, departmentId)
