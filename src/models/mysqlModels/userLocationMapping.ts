@@ -26,7 +26,7 @@ export const insertInUserlocationMapping = (userDetails: UserDetails) => {
 }
 
 export const getLocationIdFromMapping = (userId: number) => {
-  const query='SELECT map_location_id from user_location_mapping WHERE map_user_id=?'
+  const query='SELECT map_location_id from user_location_mapping WHERE map_user_id=? AND map_status="1"'
   return runQuery(query,userId)
 }
 
