@@ -5,7 +5,7 @@ import {
   putController,
   deleteController,
 } from '../controllers/controller'
-import { postMiddleware, deleteMiddleware } from '../middlewares/middleware'
+import { postMiddleware, deleteMiddleware } from '../middlewares/middlewares'
 
 const router = Router()
 
@@ -15,19 +15,26 @@ router.post(
   // Initial data validation using express validator
   [
     body('candidateId')
+      .isNumeric()
       .isLength({ max: 10 })
       .notEmpty()
       .withMessage('CandidateId Should not be empty'),
     body('firstName')
+      .isString()
       .isLength({ max: 150 })
       .isAlphanumeric()
       .withMessage('Firstname should be in alphanumeric'),
     body('lastName')
+      .isString()
       .isLength({ max: 150 })
       .isAlphanumeric()
       .withMessage('Lastname Should be in alphanumeric'),
-    body('email').isEmail().withMessage('email should be in email format'),
+    body('email')
+      .isString()
+      .isEmail()
+      .withMessage('email should be in email format'),
     body('startDate')
+      .isString()
       .isDate()
       .withMessage('Date should be in YYYY-MM-DD this format')
       .custom((startDate) => {
