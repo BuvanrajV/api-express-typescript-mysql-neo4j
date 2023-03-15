@@ -7,7 +7,7 @@ interface UserDetails {
   map_status: string;
 }
 
-export const insertDetailsInUserlocationMapping = (
+export const insertInUserlocationMapping = (
   userDetails: UserDetails
 ) => {
   return new Promise((resolve, reject) => {
