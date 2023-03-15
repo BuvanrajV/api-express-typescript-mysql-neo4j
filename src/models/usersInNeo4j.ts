@@ -76,6 +76,31 @@ export const userDepartmentRelationship = async (
   }
 }
 
+export const updateUserNode = async (
+  candidateId: number,
+  userDetails: UserDetails
+) => {
+  try {
+    const session = neo4jDriver.session()
+    await session.run(
+      ` MATCH (node:User {user_candidate_id : $user_candidate_id})
+        SET node.user_first_name =$user_first_name,
+        node.user_last_name =$user_last_name,
+        node.user_email=$user_email,
+        node.user_designation= $user_designation`,
+      {
+        user_first_name: `${userDetails.user_first_name}`,
+        user_last_name: `${userDetails.user_last_name}`,
+        user_email: `${userDetails.user_email}`,
+        user_designation: `${userDetails.user_designation}`,
+        user_candidate_id: candidateId,
+      }
+    )
+  } catch (error) {
+    console.error('error occur', error)
+  }
+}
+
 export const changeUserStatusInNeo4j = async (candidateId: number) => {
   try {
     const session = neo4jDriver.session()
@@ -85,5 +110,36 @@ export const changeUserStatusInNeo4j = async (candidateId: number) => {
     )
   } catch (error) {
     console.error('error occur', error)
-  } 
+  }
 }
+
+export const deleteUserLocationRelationship = async (userId: number) => {
+  try {
+    const session = neo4jDriver.session()
+    await session.run(
+      `MATCH (n:User {user_id: $user_id})-[r:LOCATION_OF]->()
+        DELETE r`,
+      {
+        user_id: userId,
+      }
+    )
+  } catch (error) {
+    console.error('error occur : ', error)
+  }
+}
+
+export const deleteUserDepartmentRelationship = async (userId: number) => {
+  try {
+    const session = neo4jDriver.session()
+    await session.run(
+      `MATCH (n:User {user_id: $user_id})-[r:DEPARTMENT_OF]->()
+        DELETE r`,
+      {
+        user_id: userId,
+      }
+    )
+  } catch (error) {
+    console.error('error occur : ', error)
+  }
+}
+
