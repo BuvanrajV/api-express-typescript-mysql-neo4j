@@ -39,7 +39,17 @@ export const createUser = (userDetails: UserDetails) => {
   return runQuery(query, userDetails)
 }
 
+export const updateUser = (candidateId: number, userDetails: UserDetails) => {
+  const query = 'UPDATE users SET ? WHERE user_candidate_id=?'
+  return runQuery(query, [userDetails, candidateId])
+}
+
 export const changeUserStatusInMysql = (candidateId: number) => {
   const query = 'UPDATE users SET user_status=\'0\' WHERE user_candidate_id=?'
   return runQuery(query, candidateId)
+}
+
+export const checkEmail = (email:string,candidateId:number)=>{
+  const query = 'SELECT * from users where user_email=? and not user_candidate_id=?'
+  return runQuery(query,[email,candidateId])
 }
