@@ -30,7 +30,7 @@ export const insertInUserdepartmentMapping = (
 
 
 export const getDepartmentIdFromMapping = (userId: number) => {
-  const query='SELECT map_department_id from user_department_mapping WHERE map_user_id=?'
+  const query='SELECT map_department_id from user_department_mapping WHERE map_user_id=? and map_status="1"'
   return runQuery(query,userId)
 }
 
