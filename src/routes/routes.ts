@@ -20,6 +20,7 @@ router.post(
   [
     body('candidateId')
       .isNumeric()
+      .withMessage('candidateId should be contain numbers only')
       .exists()
       .isLength({ max: 10 })
       .notEmpty()
@@ -82,6 +83,7 @@ router.put(
   [
     body('candidateId')
       .isNumeric()
+      .withMessage('candidateId should be contain numbers only')
       .isLength({ max: 10 })
       .notEmpty()
       .withMessage('CandidateId Should not be empty'),
