@@ -1,4 +1,4 @@
-import mysqlDb from '../../databases/mysql'
+import { runQuery } from '../../databases/mysql'
 
 interface UserDetails {
   user_first_name: string;
@@ -11,19 +11,6 @@ interface UserDetails {
   user_candidate_id: number;
 }
 
-const runQuery = (query: string, input: any) => {
-  return new Promise((resolve, reject) => {
-    mysqlDb.query(query, input, (err, res) => {
-      if (err) {
-        console.error('error : ', err)
-        reject(err)
-      } else {
-        resolve(res)
-      }
-    })
-  })
-}
-
 export const getUserId = (email: { user_email: string }) => {
   const query =
     'SELECT user_id FROM users WHERE user_email=? AND user_status="1"'
@@ -33,13 +20,33 @@ export const getUserId = (email: { user_email: string }) => {
 export const getCandidateById = (candidateId: number) => {
   const query =
     'SELECT * FROM users WHERE user_candidate_id=? AND user_status="1"'
-    console.log('run')
   return runQuery(query, candidateId)
 }
 
 export const createUser = (userDetails: UserDetails) => {
-  const query = 'INSERT INTO users SET ?'
-  return runQuery(query, userDetails)
+  const {
+    user_first_name,
+    user_last_name,
+    user_email,
+    user_startdate,
+    user_designation,
+    user_created_date,
+    user_status,
+    user_candidate_id,
+  } = userDetails
+  const query = `INSERT INTO users 
+    (user_first_name,user_last_name,user_email,user_startdate,user_designation,user_created_date,user_status,user_candidate_id) 
+    VALUES (?,?,?,?,?,?,?,?)`
+  return runQuery(query, [
+    user_first_name,
+    user_last_name,
+    user_email,
+    user_startdate,
+    user_designation,
+    user_created_date,
+    user_status,
+    user_candidate_id,
+  ])
 }
 
 export const updateUser = (candidateId: number, userDetails: UserDetails) => {
