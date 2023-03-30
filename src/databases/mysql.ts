@@ -3,7 +3,7 @@ import { mysqlConfig } from '../config/config'
 
 const { host, user, password, database } = mysqlConfig
 
-const mysqlDb = mysql.createPool({
+export const mysqlDb = mysql.createPool({
   connectionLimit: 100,
   host: host,
   user: user,
@@ -11,4 +11,15 @@ const mysqlDb = mysql.createPool({
   database: database,
 })
 
-export default mysqlDb
+export const runQuery = (query: string, input: any) => {
+  return new Promise((resolve, reject) => {
+    mysqlDb.query(query, input, (err, res) => {
+      if (err) {
+        console.error('error : ', err)
+        reject(err)
+      } else {
+        resolve(res)
+      }
+    })
+  })
+}
