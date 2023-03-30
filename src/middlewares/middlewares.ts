@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { checkEmail } from "./../models/mysqlModels/users";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
@@ -11,6 +12,26 @@ import {
   createDepartmentNode,
   createLocationNode,
 } from "../models/usersInNeo4j";
+import { secretKey } from "../config/config";
+
+export const tokenMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // Check CandidateId exist or not
+  const candidate: any = await getCandidateById(req.body.candidateId);
+  if (candidate[0]) {
+    return res.status(400).json({ error: "Candidate Id already exist" });
+  }
+  // Check Email exist or not
+  const userId: any = await getUserId(req.body.email);
+
+  if (userId[0]) {
+    return res.status(400).json({ error: "Email already exist" });
+  }
+  next();
+};
 
 export const postMiddleware = async (
   req: Request,
@@ -23,6 +44,14 @@ export const postMiddleware = async (
   if (!errors.isEmpty()) {
     return res.status(400).json({ error: errors.array() });
   }
+  // Verifying Token
+  const token: any = req.headers["authorization"]?.split(" ")[1];
+  jwt.verify(token, secretKey, (err: any) => {
+    if (err) {
+      res.status(400).send({ message: "Invalid Token" });
+    }
+  });
+
   // Check CandidateId exist or not
   const candidate: any = await getCandidateById(req.body.candidateId);
   if (candidate[0]) {
@@ -73,6 +102,19 @@ export const putMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
+  // Check any error occurred in initial data validation
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array() });
+  }
+  // Verifying Token
+  const token: any = req.headers["authorization"]?.split(" ")[1];
+  jwt.verify(token, secretKey, (err: any) => {
+    if (err) {
+      res.status(400).send({ message: "Invalid Token" });
+    }
+  });
+
   req.body.candidateId = parseInt(req.body.candidateId);
   const userId: any = await getCandidateById(req.body.candidateId);
   if (!userId[0]) {
