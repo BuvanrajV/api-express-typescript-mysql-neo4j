@@ -24,13 +24,13 @@ const runQuery = (query: string, input: any) => {
 export const insertInUserdepartmentMapping = (
   userDetails: UserDetails
 ) => {
-  const query='INSERT INTO user_department_mapping SET ?'
+  const query='INSERT INTO user_department_mapping SET ? '
   return runQuery(query,userDetails)
 }
 
 
 export const getDepartmentIdFromMapping = (userId: number) => {
-  const query='SELECT map_department_id from user_department_mapping WHERE map_user_id=? and map_status="1"'
+  const query='SELECT map_department_id FROM user_department_mapping WHERE map_user_id=? AND map_status="1"'
   return runQuery(query,userId)
 }
 
