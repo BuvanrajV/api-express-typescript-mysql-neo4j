@@ -13,3 +13,5 @@ export const neo4jConfig = {
   user: process.env.NEO4J_DB_USER || '',
   password: process.env.NEO4J_DB_PASSWORD || '',
 }
+
+export const secretKey = process.env.SECRET_KEY || ''
