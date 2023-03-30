@@ -60,7 +60,7 @@ export const postController = async (req: Request, res: Response) => {
     const getUserIdFromDb: any = await getUserId(
       userDetailsForMysql.user_email
     );
-    const userId = getUserIdFromDb[0].user_id;
+    const userId = getUserIdFromDb[0][0].user_id;
     //create user nodes in neo4j db
     const userDetailsForNeo4j = {
       user_id: userId,
@@ -69,7 +69,7 @@ export const postController = async (req: Request, res: Response) => {
     await createUserNode(userDetailsForNeo4j);
     //Get location id from db
     const getLocationIdFromDb: any = await getLocationId(req.body.location);
-    const locationId = getLocationIdFromDb[0].location_id;
+    const locationId = getLocationIdFromDb[0][0].location_id;
     //Insert details in userLocationMapping table(mysql db)
     const userForUserLocationMapping = {
       map_user_id: userId,
@@ -84,7 +84,7 @@ export const postController = async (req: Request, res: Response) => {
     const getDepartmentIdFromDb: any = await getDepartmentId(
       req.body.department
     );
-    const departmentId = getDepartmentIdFromDb[0].id;
+    const departmentId = getDepartmentIdFromDb[0][0].id;
     //Insert details in userDepartmentMapping table(mysql db)
     const userForUserDepartmentMapping = {
       map_user_id: userId,
@@ -120,14 +120,14 @@ export const putController = async (req: Request, res: Response) => {
     await updateUserNode(userId, userDetails);
     // Check the location updated or not
     const getIdForLocation: any = await getLocationIdFromMapping(userId);
-    const locationId = getIdForLocation[0].map_location_id;
+    const locationId = getIdForLocation[0][0].map_location_id;
     const getLocation: any = await getLocationName(locationId);
-    const location = getLocation[0].location_name;
+    const location = getLocation[0][0].location_name;
     if (location !== req.body.location) {
       //Get location id from db
       await changeMapStatusInLocation(userId);
       const getLocationIdFromDb: any = await getLocationId(req.body.location);
-      const locationId = getLocationIdFromDb[0].location_id;
+      const locationId = getLocationIdFromDb[0][0].location_id;
       const userForUserLocationMapping = {
         map_user_id: userId,
         map_location_id: locationId,
@@ -140,15 +140,15 @@ export const putController = async (req: Request, res: Response) => {
     }
     // Check the department updated or not
     const getIdForDepartment: any = await getDepartmentIdFromMapping(userId);
-    const departmentId = getIdForDepartment[0].map_department_id;
+    const departmentId = getIdForDepartment[0][0].map_department_id;
     const getDepartment: any = await getDepartmentName(departmentId);
-    const department = getDepartment[0].department_name;
+    const department = getDepartment[0][0].department_name;
     if (department !== req.body.department) {
       await changeMapStatusInDepartment(userId);
       const getDepartmentIdFromDb: any = await getDepartmentId(
         req.body.department
       );
-      const departmentId = getDepartmentIdFromDb[0].id;
+      const departmentId = getDepartmentIdFromDb[0][0].id;
       const userForUserDepartmentMapping = {
         map_user_id: userId,
         map_department_id: departmentId,
