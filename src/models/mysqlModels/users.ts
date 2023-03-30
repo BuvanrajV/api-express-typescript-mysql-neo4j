@@ -31,7 +31,9 @@ export const getUserId = (email: { user_email: string }) => {
 }
 
 export const getCandidateById = (candidateId: number) => {
-  const query = 'SELECT * FROM users WHERE user_candidate_id=? AND user_status="1"'
+  const query =
+    'SELECT * FROM users WHERE user_candidate_id=? AND user_status="1"'
+    console.log('run')
   return runQuery(query, candidateId)
 }
 
@@ -41,7 +43,8 @@ export const createUser = (userDetails: UserDetails) => {
 }
 
 export const updateUser = (candidateId: number, userDetails: UserDetails) => {
-  const query = 'UPDATE users SET ? WHERE user_candidate_id=? AND user_status="1"'
+  const query =
+    'UPDATE users SET ? WHERE user_candidate_id=? AND user_status="1"'
   return runQuery(query, [userDetails, candidateId])
 }
 
@@ -52,6 +55,6 @@ export const changeUserStatusInMysql = (candidateId: number) => {
 
 export const checkEmail = (email: string, candidateId: number) => {
   const query =
-    'SELECT * FROM users WHERE user_email=? AND user_candidate_id!=?'
+    'SELECT * FROM users WHERE user_email=? AND user_candidate_id!=? AND user_status="1"'
   return runQuery(query, [email, candidateId])
 }
