@@ -97,9 +97,9 @@ export const putController = async (req: Request, res: Response) => {
     const candidateId = req.body.candidateId
     const userId = req.body.userId
     // Update user in mysql database
-    await updateUser(candidateId, userDetails)
+    await updateUser(userId, userDetails)
     //Update user in neo4j database
-    await updateUserNode(candidateId, userDetails)
+    await updateUserNode(userId, userDetails)
     // Check the location updated or not
     const getIdForLocation: any = await getLocationIdFromMapping(userId)
     const locationId = getIdForLocation[0].map_location_id
@@ -156,9 +156,9 @@ export const putController = async (req: Request, res: Response) => {
 
 export const deleteController = async (req: Request, res: Response) => {
   try {
-    const candidateId = req.body.candidateId
-    await changeUserStatusInMysql(candidateId)
-    await changeUserStatusInNeo4j(candidateId)
+    const userId = req.body.userId
+    await changeUserStatusInMysql(userId)
+    await changeUserStatusInNeo4j(userId)
     console.log('successfully deleted')
     res.status(200).json({
       message: 'Successfully Deleted',
