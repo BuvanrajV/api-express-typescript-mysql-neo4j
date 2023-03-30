@@ -117,8 +117,8 @@ export const deleteUserLocationRelationship = async (userId: number) => {
   try {
     const session = neo4jDriver.session()
     await session.run(
-      `MATCH (n:User {user_id: $user_id})-[r:LOCATION_OF]->()
-        DELETE r`,
+      `MATCH (n:User {user_id: $user_id})-[r:LOCATION_OF]->(:Location) 
+      DELETE r`,
       {
         user_id: userId,
       }
@@ -132,7 +132,7 @@ export const deleteUserDepartmentRelationship = async (userId: number) => {
   try {
     const session = neo4jDriver.session()
     await session.run(
-      `MATCH (n:User {user_id: $user_id})-[r:DEPARTMENT_OF]->()
+      `MATCH (n:User {user_id: $user_id})-[r:DEPARTMENT_OF]->(:Department)
         DELETE r`,
       {
         user_id: userId,
