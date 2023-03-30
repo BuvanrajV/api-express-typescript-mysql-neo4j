@@ -18,12 +18,12 @@ const runQuery = (query: string, input: any) => {
 
 
 export const getDepartmentId = (department: string) => {
-  const query = 'SELECT id from departments where department_name=?'
+  const query = 'SELECT id FROM departments WHERE department_name=?'
   return runQuery(query,department)
 }
 
 
 export const getDepartmentName = (departmentId : number)=>{
-  const query='SELECT department_name from departments where id=?'
+  const query='SELECT department_name FROM departments WHERE id=?'
   return runQuery(query,departmentId)
 }
