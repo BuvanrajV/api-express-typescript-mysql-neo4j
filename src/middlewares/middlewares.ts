@@ -54,19 +54,19 @@ export const postMiddleware = async (
 
   // Check CandidateId exist or not
   const candidate: any = await getCandidateById(req.body.candidateId);
-  if (candidate[0]) {
+  if (candidate[0][0]) {
     return res.status(400).json({ error: "Candidate Id already exist" });
   }
   // Check Email exist or not
   const userId: any = await getUserId(req.body.email);
 
-  if (userId[0]) {
+  if (userId[0][0]) {
     return res.status(400).json({ error: "Email already exist" });
   }
   // Check Location exist or not
   const locationId: any = await getLocationId(req.body.location);
   // Create location in db
-  if (!locationId[0]) {
+  if (!locationId[0][0]) {
     await createLocation(req.body.location);
     const getLocationIdFromDb: any = await getLocationId(req.body.location);
     const locationId = getLocationIdFromDb[0].location_id;
@@ -75,7 +75,7 @@ export const postMiddleware = async (
   // Check Department exist or not
   const departmentId: any = await getDepartmentId(req.body.department);
   // Create department in db
-  if (!departmentId[0]) {
+  if (!departmentId[0][0]) {
     await createDepartment(req.body.department);
     const getDepartmentIdFromDb: any = await getDepartmentId(
       req.body.department
@@ -117,17 +117,17 @@ export const putMiddleware = async (
 
   req.body.candidateId = parseInt(req.body.candidateId);
   const userId: any = await getCandidateById(req.body.candidateId);
-  if (!userId[0]) {
+  if (!userId[0][0]) {
     return res.status(400).json({ error: "Enter valid candidate Id" });
   }
   req.body.userId = userId;
   const emailExist: any = await checkEmail(req.body.email, userId);
-  if (emailExist[0]) {
+  if (emailExist[0][0]) {
     return res.status(400).json({ error: "Email already Exist" });
   }
   // Check Location exist or not
   const locationId: any = await getLocationId(req.body.location);
-  if (!locationId[0]) {
+  if (!locationId[0][0]) {
     await createLocation(req.body.location);
     const getLocationIdFromDb: any = await getLocationId(req.body.location);
     const locationId = getLocationIdFromDb[0].location_id;
@@ -135,12 +135,12 @@ export const putMiddleware = async (
   }
   // Check Department exist or not
   const departmentId: any = await getDepartmentId(req.body.department);
-  if (!departmentId[0]) {
+  if (!departmentId[0][0]) {
     await createDepartment(req.body.department);
     const getDepartmentIdFromDb: any = await getDepartmentId(
       req.body.department
     );
-    const departmentId = getDepartmentIdFromDb[0].id;
+    const departmentId = getDepartmentIdFromDb[0][0].id;
     await createDepartmentNode(departmentId, req.body.department);
   }
   req.body.userDetails = {
