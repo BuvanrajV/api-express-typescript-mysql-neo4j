@@ -44,6 +44,46 @@ export const createUserNode = async (userDetails: UserDetails) => {
   }
 }
 
+export const createLocationNode = async (locationId : number,location : string) => {
+  try{
+    const session = neo4jDriver.session()
+    await session.run(
+      `CREATE (:Location {
+        location_id : $location_id,
+        location_name : $location_name,
+        location_status : $location_status
+      })`,
+      {
+        location_id : locationId,
+        location_name : `${location}`,
+        location_status : `${1}`
+      }
+    )
+  }catch (error) {
+    console.error('error occur', error)
+  }
+}
+
+export const createDepartmentNode = async (departmentId : number ,department : string) => {
+  try{
+    const session = neo4jDriver.session()
+    await session.run(
+      `CREATE (:Department {
+        department_id : $department_id,
+        department_name : $department_name,
+        department_status : $department_status
+      })`,
+      {
+        department_id : departmentId,
+        department_name : `${department}`,
+        department_status : `${1}`
+      }
+    )
+  }catch (error) {
+    console.error('error occur', error)
+  }
+}
+
 export const userLocationRelationship = async (
   userId: number,
   locationId: number
@@ -77,13 +117,13 @@ export const userDepartmentRelationship = async (
 }
 
 export const updateUserNode = async (
-  candidateId: number,
+  userId: number,
   userDetails: UserDetails
 ) => {
   try {
     const session = neo4jDriver.session()
     await session.run(
-      ` MATCH (node:User {user_candidate_id : $user_candidate_id})
+      ` MATCH (node:User {user_id : $user_id})
         SET node.user_first_name =$user_first_name,
         node.user_last_name =$user_last_name,
         node.user_email=$user_email,
@@ -93,7 +133,7 @@ export const updateUserNode = async (
         user_last_name: `${userDetails.user_last_name}`,
         user_email: `${userDetails.user_email}`,
         user_designation: `${userDetails.user_designation}`,
-        user_candidate_id: candidateId,
+        user_id: userId,
       }
     )
   } catch (error) {
@@ -101,12 +141,15 @@ export const updateUserNode = async (
   }
 }
 
-export const changeUserStatusInNeo4j = async (candidateId: number) => {
+export const changeUserStatusInNeo4j = async (userId: number) => {
   try {
     const session = neo4jDriver.session()
     await session.run(
-      `MATCH (user:User {user_candidate_id:${candidateId}})
-      SET user.user_status='0'`
+      `MATCH (user:User {user_id:$user_id})
+      SET user.user_status='0'`,
+      {
+        user_id:userId
+      }
     )
   } catch (error) {
     console.error('error occur', error)
