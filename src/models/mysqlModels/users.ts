@@ -19,7 +19,7 @@ export const getUserId = (email: { user_email: string }) => {
 
 export const getCandidateById = (candidateId: number) => {
   const query =
-    'SELECT * FROM users WHERE user_candidate_id=? AND user_status="1"'
+    'SELECT user_id FROM users WHERE user_candidate_id=? AND user_status="1"'
   return runQuery(query, candidateId)
 }
 
@@ -49,19 +49,19 @@ export const createUser = (userDetails: UserDetails) => {
   ])
 }
 
-export const updateUser = (candidateId: number, userDetails: UserDetails) => {
+export const updateUser = (userId: number, userDetails: UserDetails) => {
   const query =
-    'UPDATE users SET ? WHERE user_candidate_id=? AND user_status="1"'
-  return runQuery(query, [userDetails, candidateId])
+    'UPDATE users SET ? WHERE user_id=? AND user_status="1"'
+  return runQuery(query, [userDetails, userId])
 }
 
-export const changeUserStatusInMysql = (candidateId: number) => {
-  const query = 'UPDATE users SET user_status="0" WHERE user_candidate_id=?'
-  return runQuery(query, candidateId)
+export const changeUserStatusInMysql = (userId: number) => {
+  const query = 'UPDATE users SET user_status="0" WHERE user_id=?'
+  return runQuery(query, userId)
 }
 
-export const checkEmail = (email: string, candidateId: number) => {
+export const checkEmail = (email: string, userId: number) => {
   const query =
-    'SELECT * FROM users WHERE user_email=? AND user_candidate_id!=? AND user_status="1"'
-  return runQuery(query, [email, candidateId])
+    'SELECT * FROM users WHERE user_email=? AND user_id!=? AND user_status="1"'
+  return runQuery(query, [email, userId])
 }
