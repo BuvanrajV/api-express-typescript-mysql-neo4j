@@ -16,6 +16,11 @@ export const postMiddleware = async (
   if (!errors.isEmpty()) {
     return res.status(400).json({ error: errors.array() })
   }
+  // Check CandidateId exist or not
+  const candidate: any = await getCandidateById(req.body.candidateId)
+  if (candidate[0]) {
+    return res.status(400).json({ error: 'Candidate Id already exist' })
+  }
   // Check Email exist or not
   const userId: any = await getUserId(req.body.email)
 
@@ -31,11 +36,6 @@ export const postMiddleware = async (
   const departmentId: any = await getDepartmentId(req.body.department)
   if (!departmentId[0]) {
     return res.status(400).json({ error: 'Department not found. Invalid!' })
-  }
-  // Check CandidateId exist or not
-  const candidate: any = await getCandidateById(req.body.candidateId)
-  if (candidate[0]) {
-    return res.status(400).json({ error: 'Candidate Id already exist' })
   }
   // User details created
   req.body.userDetailsForMysql = {
@@ -61,7 +61,7 @@ export const putMiddleware = async (
   if (!candidate[0]) {
     return res.status(400).json({ error: 'Enter valid candidate Id' })
   }
-  req.body.userId=candidate[0].user_id
+  req.body.userId = candidate[0].user_id
   const emailExist: any = await checkEmail(
     req.body.email,
     req.body.candidateId
@@ -99,10 +99,6 @@ export const deleteMiddleware = async (
   const candidate: any = await getCandidateById(req.body.candidateId)
   if (!candidate[0]) {
     return res.status(400).json({ error: 'Enter valid candidate Id' })
-  }
-  const userId: any = await getUserId(req.body.email)
-  if (!userId[0]) {
-    return res.status(400).json({ error: 'Invalid Email!' })
   }
   next()
 }
